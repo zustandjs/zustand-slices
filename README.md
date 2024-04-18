@@ -24,7 +24,7 @@ const countSlice = createSlice({
   value: 0,
   actions: {
     inc: () => (prev) => prev + 1,
-    addBy: (n: number) => (prev) => prev + n,
+    reset: () => () => 0,
   },
 });
 
@@ -33,6 +33,7 @@ const textSlice = createSlice({
   value: 'Hello',
   actions: {
     updateText: (newText: string) => () => newText,
+    reset: () => () => 'Hello',
   },
 });
 
@@ -40,20 +41,24 @@ const useCountStore = create(withSlices(countSlice, textSlice));
 
 const Counter = () => {
   const count = useCountStore((state) => state.count);
-  const inc = useCountStore((state) => state.inc);
-  const addBy = useCountStore((state) => state.addBy);
   const text = useCountStore((state) => state.text);
-  const updateText = useCountStore((state) => state.updateText);
+  const { inc, updateText, reset } = useCountStore.getState();
   return (
     <>
-      <div>Count: {count}</div>
-      <button type="button" onClick={inc}>
-        +1
-      </button>
-      <button type="button" onClick={() => addBy(10)}>
-        +10
-      </button>
-      <input value={text} onChange={(e) => updateText(e.target.value)} />
+      <p>
+        Count: {count}
+        <button type="button" onClick={inc}>
+          +1
+        </button>
+      </p>
+      <p>
+        <input value={text} onChange={(e) => updateText(e.target.value)} />
+      </p>
+      <p>
+        <button type="button" onClick={reset}>
+          Reset
+        </button>
+      </p>
     </>
   );
 };
