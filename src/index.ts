@@ -4,7 +4,7 @@ type SliceConfig<
   Name extends string,
   Value,
   Actions extends {
-    [actionName: string]: (...args: never[]) => (slice: Value) => Value;
+    [actionName: string]: (...args: never[]) => (prev: Value) => Value;
   },
 > = {
   name: Name;
@@ -70,7 +70,7 @@ export function createSlice<
   Name extends string,
   Value,
   Actions extends {
-    [actionName: string]: (...args: never[]) => (slice: Value) => Value;
+    [actionName: string]: (...args: never[]) => (prev: Value) => Value;
   },
 >(config: SliceConfig<Name, Value, Actions>) {
   return config;
