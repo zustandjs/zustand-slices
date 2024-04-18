@@ -1,6 +1,8 @@
 # Change Log
 
 ## [Unreleased]
+
+## [0.0.2] - 2024-04-19
 ### Changed
 - Detect name collisions #1
 
