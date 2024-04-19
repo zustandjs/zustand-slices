@@ -94,12 +94,12 @@ export function withSlices<Configs extends SliceConfig<string, unknown, any>[]>(
     const sliceMapsByAction = new Map<string, Map<string, any>>();
     for (const config of configs) {
       state[config.name] = config.value;
-      for (const actionName of Object.keys(config.actions)) {
+      for (const [actionName, actionFn] of Object.entries(config.actions)) {
         let actionsBySlice = sliceMapsByAction.get(actionName);
         if (!actionsBySlice) {
           sliceMapsByAction.set(actionName, (actionsBySlice = new Map()));
         }
-        actionsBySlice.set(config.name, config.actions[actionName]);
+        actionsBySlice.set(config.name, actionFn);
       }
     }
     for (const [actionName, actionsBySlice] of sliceMapsByAction) {
