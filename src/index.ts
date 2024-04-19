@@ -104,13 +104,15 @@ export function withSlices<Configs extends SliceConfig<string, unknown, any>[]>(
     }
     for (const [actionName, actionsBySlice] of sliceMapsByAction) {
       state[actionName] = (...args: any[]) => {
-        for (const [sliceName, actionFn] of actionsBySlice) {
-          set((prevState: any) => {
+        set((prevState: any) => {
+          const nextState: any = {};
+          for (const [sliceName, actionFn] of actionsBySlice) {
             const prevSlice = prevState[sliceName];
             const nextSlice = actionFn(...args)(prevSlice);
-            return { [sliceName]: nextSlice } as any;
-          });
-        }
+            nextState[sliceName] = nextSlice;
+          }
+          return nextState;
+        });
       };
     }
     return state;
