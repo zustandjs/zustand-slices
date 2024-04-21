@@ -25,7 +25,9 @@ type InferState<Configs> = Configs extends [
     } & InferState<Rest>
   : unknown;
 
-type isInArray<Name, Names extends unknown[]> = Name extends Names[number] ? true : false;
+type isInArray<Name, Names extends unknown[]> = Name extends Names[number]
+  ? true
+  : false;
 
 type HasDuplicatedNames<
   Configs,
