@@ -35,7 +35,10 @@
   },
   "jest": {
     "testEnvironment": "jsdom",
-    "preset": "ts-jest/presets/js-with-ts"
+    "preset": "ts-jest/presets/js-with-ts",
+    "setupFilesAfterEnv": [
+      "./test-setup.ts"
+    ]
   },
   "keywords": [
     "react",
@@ -44,6 +47,9 @@
   ],
   "license": "MIT",
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/react": "^15.0.2",
+    "@testing-library/user-event": "^14.5.2",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.12.7",
     "@types/react": "^18.2.79",
