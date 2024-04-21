@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.1.0] - 2024-04-22
+
 ### Changed
 
 - ESM-first build #5
