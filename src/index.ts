@@ -78,6 +78,8 @@ export function createSlice<
   return config;
 }
 
+// FIXME no any in a reasonable way?
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function withSlices<Configs extends SliceConfig<string, unknown, any>[]>(
   ...configs: Configs
 ): IsValidConfigs<Configs> extends true
