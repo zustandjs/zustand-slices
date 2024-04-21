@@ -1,7 +1,8 @@
+import { describe, it } from 'vitest';
 import { expectType } from 'ts-expect';
 import type { TypeEqual } from 'ts-expect';
 
-import { createSlice, withSlices } from '../src/index';
+import { createSlice, withSlices } from 'zustand-slices';
 
 describe('slice type', () => {
   it('single slice', () => {
