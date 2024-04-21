@@ -25,14 +25,7 @@ type InferState<Configs> = Configs extends [
     } & InferState<Rest>
   : unknown;
 
-type IsDuplicated<Name, Names extends unknown[]> = Names extends [
-  infer One,
-  ...infer Rest,
-]
-  ? One extends Name
-    ? true
-    : IsDuplicated<Name, Rest>
-  : false;
+type isInArray<Name, Names extends unknown[]> = Name extends Names[number] ? true : false;
 
 type HasDuplicatedNames<
   Configs,
@@ -41,9 +34,9 @@ type HasDuplicatedNames<
   SliceConfig<infer Name, infer _Value, infer Actions>,
   ...infer Rest,
 ]
-  ? Name extends Names[number]
+  ? isInArray<Name, Names> extends true
     ? true
-    : IsDuplicated<keyof Actions, Names> extends true
+    : isInArray<keyof Actions, Names> extends true
       ? true
       : HasDuplicatedNames<Rest, [Name, ...Names]>
   : false;
