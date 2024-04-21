@@ -1,10 +1,9 @@
-import { afterEach, describe, expect, it } from 'vitest';
-import { createContext, useContext, useState } from 'react';
+import { afterEach, expect, test } from 'vitest';
+import { createContext, useContext, useRef } from 'react';
 import type { ReactNode } from 'react';
-import { create, useStore as useZustandStore } from 'zustand';
+import { create, useStore } from 'zustand';
 import type { StoreApi } from 'zustand';
-import { cleanup, render } from '@testing-library/react';
-import type { RenderOptions } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { createSlice, withSlices } from 'zustand-slices';
 
@@ -15,27 +14,27 @@ type ExtractState<S> = S extends {
   : never;
 
 function createZustandContext<Store extends StoreApi<unknown>>(
-  makeStore: () => Store,
+  initializeStore: () => Store,
 ) {
-  const Context = createContext<Store | undefined>(undefined);
+  const Context = createContext<Store | null>(null);
   const StoreProvider = ({ children }: { children: ReactNode }) => {
-    const [store] = useState(makeStore);
+    const store = useRef(initializeStore()).current;
     return <Context.Provider value={store}>{children}</Context.Provider>;
   };
-  function useStore() {
+  function useStoreApi() {
     const store = useContext(Context);
     if (!store) {
-      throw new Error('useStore must be used within a StoreProvider');
+      throw new Error('useStoreApi must be used within a StoreProvider');
     }
     return store;
   }
   function useSelector<Selected>(
     selector: (state: ExtractState<Store>) => Selected,
   ) {
-    const store = useStore();
-    return useZustandStore(store, selector);
+    const store = useStoreApi();
+    return useStore(store, selector);
   }
-  return { StoreProvider, useStore, useSelector };
+  return { StoreProvider, useStoreApi, useSelector };
 }
 
 const countSlice = createSlice({
@@ -56,19 +55,16 @@ const textSlice = createSlice({
   },
 });
 
-const makeStore = () => create(withSlices(countSlice, textSlice));
+const { StoreProvider, useStoreApi, useSelector } = createZustandContext(() =>
+  create(withSlices(countSlice, textSlice)),
+);
 
-const { StoreProvider, useStore, useSelector } =
-  createZustandContext(makeStore);
-
-const renderWithProvider = (
-  ui: ReactNode,
-  options?: Omit<RenderOptions, 'wrapper'>,
-) => render(ui, { wrapper: StoreProvider, ...options });
+const renderWithStoreProvider = (app: ReactNode) =>
+  render(app, { wrapper: StoreProvider });
 
 const Counter = () => {
   const count = useSelector((state) => state.count);
-  const { inc } = useStore().getState();
+  const { inc } = useStoreApi().getState();
   return (
     <div>
       <p data-testid="count">{count}</p>
@@ -81,7 +77,7 @@ const Counter = () => {
 
 const Text = () => {
   const text = useSelector((state) => state.text);
-  const { updateText } = useStore().getState();
+  const { updateText } = useStoreApi().getState();
   return (
     <div>
       <input value={text} onChange={(e) => updateText(e.target.value)} />
@@ -90,7 +86,7 @@ const Text = () => {
 };
 
 const App = () => {
-  const { reset } = useStore().getState();
+  const { reset } = useStoreApi().getState();
   return (
     <div>
       <Counter />
@@ -102,55 +98,40 @@ const App = () => {
   );
 };
 
-describe('component spec', () => {
+afterEach(cleanup);
+
+test('should render the app', () => {
+  renderWithStoreProvider(<App />);
+  expect(screen.getByTestId('count')).toHaveTextContent('0');
+  expect(screen.getByRole('textbox')).toBeInTheDocument();
+});
+
+test('should increment the count when the button is pressed', async () => {
   const user = userEvent.setup();
-  afterEach(cleanup);
-  it('should render the app', () => {
-    const { getByRole, getByTestId } = renderWithProvider(<App />);
-    expect(getByTestId('count')).toHaveTextContent('0');
-    expect(getByRole('textbox')).toBeInTheDocument();
-  });
-  it('should increment the count when the button is pressed', async () => {
-    const { getByRole, getByTestId } = renderWithProvider(<App />);
+  renderWithStoreProvider(<App />);
+  expect(screen.getByTestId('count')).toHaveTextContent('0');
+  await user.click(screen.getByRole('button', { name: 'Increment' }));
+  expect(screen.getByTestId('count')).toHaveTextContent('1');
+});
 
-    const count = getByTestId('count');
-    expect(count).toHaveTextContent('0');
+test('should update the text when the input is changed', async () => {
+  const user = userEvent.setup();
+  renderWithStoreProvider(<App />);
+  expect(screen.getByRole('textbox')).toHaveValue('Hello');
+  await user.type(screen.getByRole('textbox'), ' World');
+  expect(screen.getByRole('textbox')).toHaveValue('Hello World');
+});
 
-    const button = getByRole('button', { name: 'Increment' });
-    await user.click(button);
-
-    expect(count).toHaveTextContent('1');
-  });
-  it('should update the text when the input is changed', async () => {
-    const { getByRole } = renderWithProvider(<App />);
-
-    const input = getByRole('textbox');
-    expect(input).toHaveValue('Hello');
-
-    await user.type(input, ' World');
-
-    expect(input).toHaveValue('Hello World');
-  });
-  it('should reset the state when the reset button is pressed', async () => {
-    const { getByRole, getByTestId } = renderWithProvider(<App />);
-
-    const resetButton = getByRole('button', { name: 'Reset' });
-
-    const count = getByTestId('count');
-    expect(count).toHaveTextContent('0');
-
-    const incrementButton = getByRole('button', { name: 'Increment' });
-    await user.click(incrementButton);
-    expect(count).toHaveTextContent('1');
-
-    const input = getByRole('textbox');
-    await user.type(input, ' World');
-    expect(input).toHaveValue('Hello World');
-
-    await user.click(resetButton);
-
-    // both slices reset because the action name is the same
-    expect(count).toHaveTextContent('0');
-    expect(input).toHaveValue('Hello');
-  });
+test('should reset the state when the reset button is pressed', async () => {
+  const user = userEvent.setup();
+  renderWithStoreProvider(<App />);
+  expect(screen.getByTestId('count')).toHaveTextContent('0');
+  await user.click(screen.getByRole('button', { name: 'Increment' }));
+  expect(screen.getByTestId('count')).toHaveTextContent('1');
+  await user.type(screen.getByRole('textbox'), ' World');
+  expect(screen.getByRole('textbox')).toHaveValue('Hello World');
+  await user.click(screen.getByRole('button', { name: 'Reset' }));
+  // both slices reset because the action name is the same
+  expect(screen.getByTestId('count')).toHaveTextContent('0');
+  expect(screen.getByRole('textbox')).toHaveValue('Hello');
 });
