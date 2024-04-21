@@ -1,4 +1,6 @@
-type ParametersIf<T> = T extends (...args: infer Args) => any ? Args : never;
+type ParametersIf<T> = T extends (...args: infer Args) => unknown
+  ? Args
+  : never;
 
 type SliceConfig<
   Name extends string,
@@ -90,8 +92,9 @@ export function withSlices<Configs extends SliceConfig<string, unknown, any>[]>(
       fn: (prevState: InferState<Configs>) => Partial<InferState<Configs>>,
     ) => void,
   ) => {
-    const state: any = {};
-    const sliceMapsByAction = new Map<string, Map<string, any>>();
+    const state: Record<string, unknown> = {};
+    type ActionFn = (...args: unknown[]) => (prev: unknown) => unknown;
+    const sliceMapsByAction = new Map<string, Map<string, ActionFn>>();
     for (const config of configs) {
       state[config.name] = config.value;
       for (const [actionName, actionFn] of Object.entries(config.actions)) {
@@ -99,20 +102,20 @@ export function withSlices<Configs extends SliceConfig<string, unknown, any>[]>(
         if (!actionsBySlice) {
           sliceMapsByAction.set(actionName, (actionsBySlice = new Map()));
         }
-        actionsBySlice.set(config.name, actionFn);
+        actionsBySlice.set(config.name, actionFn as never);
       }
     }
     for (const [actionName, actionsBySlice] of sliceMapsByAction) {
-      state[actionName] = (...args: any[]) => {
-        set((prevState: any) => {
-          const nextState: any = {};
+      state[actionName] = (...args: unknown[]) => {
+        set(((prevState: Record<string, unknown>) => {
+          const nextState: Record<string, unknown> = {};
           for (const [sliceName, actionFn] of actionsBySlice) {
             const prevSlice = prevState[sliceName];
             const nextSlice = actionFn(...args)(prevSlice);
             nextState[sliceName] = nextSlice;
           }
           return nextState;
-        });
+        }) as never);
       };
     }
     return state;
