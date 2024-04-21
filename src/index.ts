@@ -25,13 +25,13 @@ type InferState<Configs> = Configs extends [
     } & InferState<Rest>
   : unknown;
 
-type IsDupicated<Name, Names extends unknown[]> = Names extends [
+type IsDuplicated<Name, Names extends unknown[]> = Names extends [
   infer One,
   ...infer Rest,
 ]
   ? One extends Name
     ? true
-    : IsDupicated<Name, Rest>
+    : IsDuplicated<Name, Rest>
   : false;
 
 type HasDuplicatedNames<
@@ -43,7 +43,7 @@ type HasDuplicatedNames<
 ]
   ? Name extends Names[number]
     ? true
-    : IsDupicated<keyof Actions, Names> extends true
+    : IsDuplicated<keyof Actions, Names> extends true
       ? true
       : HasDuplicatedNames<Rest, [Name, ...Names]>
   : false;
