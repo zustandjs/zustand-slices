@@ -3,7 +3,7 @@ import type { TypeEqual } from 'ts-expect';
 
 import { createSlice, withSlices } from '../src/index';
 
-describe('type spec', () => {
+describe('slice type', () => {
   it('single slice', () => {
     const countSlice = createSlice({
       name: 'count',
@@ -25,8 +25,10 @@ describe('type spec', () => {
       >
     >(true);
   });
+});
 
-  it('detect name collisions', () => {
+describe('name collisions', () => {
+  it('same slice names', () => {
     const countSlice = createSlice({
       name: 'count',
       value: 0,
@@ -44,7 +46,7 @@ describe('type spec', () => {
     expectType<never>(withSlices(countSlice, anotherCountSlice));
   });
 
-  it('detect name collisions with actions', () => {
+  it('slice name and action name', () => {
     const countSlice = createSlice({
       name: 'count',
       value: 0,
@@ -62,7 +64,28 @@ describe('type spec', () => {
     expectType<never>(withSlices(countSlice, anotherCountSlice));
   });
 
-  it('detect args collisions', () => {
+  it('slice name and action name (overlapping case)', () => {
+    const countSlice = createSlice({
+      name: 'count',
+      value: 0,
+      actions: {
+        inc: () => (prev) => prev + 1,
+      },
+    });
+    const anotherCountSlice = createSlice({
+      name: 'anotherCount',
+      value: 0,
+      actions: {
+        count: () => (prev) => prev + 1,
+        dec: () => (prev) => prev - 1,
+      },
+    });
+    expectType<never>(withSlices(countSlice, anotherCountSlice));
+  });
+});
+
+describe('args collisions', () => {
+  it('different args', () => {
     const countSlice = createSlice({
       name: 'count',
       value: 0,
@@ -81,7 +104,7 @@ describe('type spec', () => {
     expectType<never>(withSlices(anotherCountSlice, countSlice));
   });
 
-  it('no args collisions', () => {
+  it('same args', () => {
     const countSlice = createSlice({
       name: 'count',
       value: 0,
@@ -104,7 +127,7 @@ describe('type spec', () => {
     );
   });
 
-  it('detect args collisions (overload case)', () => {
+  it('overload case', () => {
     const countSlice = createSlice({
       name: 'count',
       value: 0,
