@@ -91,26 +91,28 @@ export function withSlices<Configs extends SliceConfig<string, unknown, any>[]>(
     ) => void,
   ) => {
     const state: any = {};
-    const actionNameSet = new Set<string>();
+    const sliceMapsByAction = new Map<string, Map<string, any>>();
     for (const config of configs) {
       state[config.name] = config.value;
-      for (const actionName of Object.keys(config.actions)) {
-        actionNameSet.add(actionName);
+      for (const [actionName, actionFn] of Object.entries(config.actions)) {
+        let actionsBySlice = sliceMapsByAction.get(actionName);
+        if (!actionsBySlice) {
+          sliceMapsByAction.set(actionName, (actionsBySlice = new Map()));
+        }
+        actionsBySlice.set(config.name, actionFn);
       }
     }
-    for (const actionName of actionNameSet) {
+    for (const [actionName, actionsBySlice] of sliceMapsByAction) {
       state[actionName] = (...args: any[]) => {
-        // FIXME not very efficient to do this every time
-        for (const config of configs) {
-          const actionFn = config.actions[actionName];
-          if (actionFn) {
-            set((prevState: any) => {
-              const prevSlice = prevState[config.name];
-              const nextSlice = actionFn(...args)(prevSlice);
-              return { [config.name]: nextSlice } as any;
-            });
+        set((prevState: any) => {
+          const nextState: any = {};
+          for (const [sliceName, actionFn] of actionsBySlice) {
+            const prevSlice = prevState[sliceName];
+            const nextSlice = actionFn(...args)(prevSlice);
+            nextState[sliceName] = nextSlice;
           }
-        }
+          return nextState;
+        });
       };
     }
     return state;
