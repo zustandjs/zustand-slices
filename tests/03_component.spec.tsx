@@ -1,10 +1,12 @@
-import { ReactNode, createContext, useContext, useState } from 'react';
-import { StoreApi, create, useStore as useZustandStore } from 'zustand';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { render, RenderOptions } from '@testing-library/react';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import userEvent from '@testing-library/user-event';
-import { createSlice, withSlices } from '../src/index';
+import { afterEach, describe, expect, it } from 'vitest';
+import { createContext, useContext, useState } from 'react';
+import type { ReactNode } from 'react';
+import { create, useStore as useZustandStore } from 'zustand';
+import type { StoreApi } from 'zustand';
+import { cleanup, render } from '@testing-library/react';
+import type { RenderOptions } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
+import { createSlice, withSlices } from 'zustand-slices';
 
 type ExtractState<S> = S extends {
   getState: () => infer State;
@@ -12,7 +14,7 @@ type ExtractState<S> = S extends {
   ? State
   : never;
 
-function createZustandContext<Store extends StoreApi<any>>(
+function createZustandContext<Store extends StoreApi<unknown>>(
   makeStore: () => Store,
 ) {
   const Context = createContext<Store | undefined>(undefined);
@@ -102,6 +104,7 @@ const App = () => {
 
 describe('component spec', () => {
   const user = userEvent.setup();
+  afterEach(cleanup);
   it('should render the app', () => {
     const { getByRole, getByTestId } = renderWithProvider(<App />);
     expect(getByTestId('count')).toHaveTextContent('0');

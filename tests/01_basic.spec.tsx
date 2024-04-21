@@ -1,5 +1,6 @@
+import { describe, expect, it } from 'vitest';
 import { create } from 'zustand';
-import { createSlice, withSlices } from '../src/index';
+import { createSlice, withSlices } from 'zustand-slices';
 
 describe('basic spec', () => {
   it('should export functions', () => {
