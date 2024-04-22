@@ -16,10 +16,15 @@ type ExtractState<S> = S extends {
 function createZustandContext<Store extends StoreApi<unknown>>(
   initializeStore: () => Store,
 ) {
-  const Context = createContext<Store | null>(null);
+  const Context = createContext<Store | undefined>(undefined);
   const StoreProvider = ({ children }: { children: ReactNode }) => {
-    const store = useRef(initializeStore()).current;
-    return <Context.Provider value={store}>{children}</Context.Provider>;
+    const storeRef = useRef<Store>();
+    if (!storeRef.current) {
+      storeRef.current = initializeStore();
+    }
+    return (
+      <Context.Provider value={storeRef.current}>{children}</Context.Provider>
+    );
   };
   function useStoreApi() {
     const store = useContext(Context);
