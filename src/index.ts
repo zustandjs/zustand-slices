@@ -25,15 +25,6 @@ type InferState<Configs> = Configs extends [
     } & InferState<Rest>
   : unknown;
 
-type IsDuplicated<Name, Names extends unknown[]> = Names extends [
-  infer One,
-  ...infer Rest,
-]
-  ? One extends Name
-    ? true
-    : IsDuplicated<Name, Rest>
-  : false;
-
 type HasDuplicatedNames<
   Configs,
   Names extends string[] = [],
@@ -41,11 +32,9 @@ type HasDuplicatedNames<
   SliceConfig<infer Name, infer _Value, infer Actions>,
   ...infer Rest,
 ]
-  ? Name extends Names[number]
-    ? true
-    : IsDuplicated<keyof Actions, Names> extends true
-      ? true
-      : HasDuplicatedNames<Rest, [Name, ...Names]>
+  ? Extract<Name | keyof Actions, Names[number]> extends never
+    ? HasDuplicatedNames<Rest, [Name, ...Names]>
+    : true
   : false;
 
 type HasDuplicatedArgs<Configs, State> = Configs extends [
@@ -78,9 +67,9 @@ export function createSlice<
   return config;
 }
 
-// FIXME no any in a reasonable way?
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function withSlices<Configs extends SliceConfig<string, unknown, any>[]>(
+export function withSlices<
+  Configs extends SliceConfig<string, unknown, NonNullable<unknown>>[],
+>(
   ...configs: Configs
 ): IsValidConfigs<Configs> extends true
   ? (

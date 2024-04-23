@@ -26,6 +26,44 @@ test('slice type: single slice', () => {
   >(true);
 });
 
+test('slice type: withSlices', () => {
+  const countSlice = createSlice({
+    name: 'count',
+    value: 0,
+    actions: {
+      inc: () => (prev) => prev + 1,
+      reset: () => () => 0,
+    },
+  });
+
+  const textSlice = createSlice({
+    name: 'text',
+    value: 'Hello',
+    actions: {
+      updateText: (newText: string) => () => newText,
+      reset: () => () => 'Hello',
+    },
+  });
+
+  type CountTextState = {
+    count: number;
+    inc: () => void;
+    text: string;
+    updateText: (newText: string) => void;
+    reset: () => void;
+  };
+
+  const slices = withSlices(countSlice, textSlice);
+
+  expectType<
+    (
+      set: (fn: (prevState: CountTextState) => Partial<CountTextState>) => void,
+    ) => CountTextState
+  >(slices);
+
+  expectType<TypeEqual<typeof slices, never>>(false);
+});
+
 test('name collisions: same slice names', () => {
   const countSlice = createSlice({
     name: 'count',
