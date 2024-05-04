@@ -78,6 +78,7 @@ and open <http://localhost:8080> in your web browser.
 You can also try them in codesandbox.io:
 [01](https://codesandbox.io/s/github/zustandjs/zustand-slices/tree/main/examples/01_counter)
 [02](https://codesandbox.io/s/github/zustandjs/zustand-slices/tree/main/examples/02_async)
+[03](https://codesandbox.io/s/github/zustandjs/zustand-slices/tree/main/examples/03_actions)
 
 ## Tweets
 
@@ -86,3 +87,4 @@ You can also try them in codesandbox.io:
 - https://twitter.com/dai_shi/status/1780955525292982285
 - https://twitter.com/dai_shi/status/1781106942724993372
 - https://twitter.com/dai_shi/status/1785504766254297436
+- https://twitter.com/dai_shi/status/1786568001044750693
