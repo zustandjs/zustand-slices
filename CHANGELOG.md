@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.2.0] - 2024-05-04
+
+### Added
+
+- feat: store actions #10
+
 ## [0.1.0] - 2024-04-22
 
 ### Changed
