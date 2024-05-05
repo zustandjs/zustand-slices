@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { create } from 'zustand';
 import { cleanup, render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import { createSlice, withSlices } from 'zustand-slices';
+import { createSlice, withSlices, withActions } from 'zustand-slices';
 import createZustandContext from './utils/createZustandContext.js';
 
 const countSlice = createSlice({
@@ -11,7 +11,7 @@ const countSlice = createSlice({
   value: 0,
   actions: {
     inc: () => (state) => state + 1,
-    reset: () => () => 0,
+    set: (newCount: number) => () => newCount,
   },
 });
 
@@ -20,12 +20,17 @@ const textSlice = createSlice({
   value: 'Hello',
   actions: {
     updateText: (text: string) => () => text,
-    reset: () => () => 'Hello',
   },
 });
 
 const { StoreProvider, useStoreApi, useSelector } = createZustandContext(() =>
-  create(withSlices(countSlice, textSlice)),
+  create(
+    withActions(withSlices(countSlice, textSlice), {
+      setCountWithTextLength: () => (state) => {
+        state.set(state.text.length);
+      },
+    }),
+  ),
 );
 
 const renderWithStoreProvider = (app: ReactNode) =>
@@ -55,14 +60,16 @@ const Text = () => {
 };
 
 const App = () => {
-  const { reset } = useStoreApi().getState();
+  const { setCountWithTextLength } = useStoreApi().getState();
   return (
     <div>
       <Counter />
       <Text />
-      <button type="button" onClick={reset}>
-        Reset
-      </button>
+      <p data-testid="set-text-length-to-count">
+        <button type="button" onClick={setCountWithTextLength}>
+          Set Text Length to Count
+        </button>
+      </p>
     </div>
   );
 };
@@ -73,34 +80,24 @@ test('should render the app', () => {
   renderWithStoreProvider(<App />);
   expect(screen.getByTestId('count')).toHaveTextContent('0');
   expect(screen.getByRole('textbox')).toBeInTheDocument();
+  expect(screen.getByTestId('set-text-length-to-count')).toBeInTheDocument();
 });
 
-test('should increment the count when the button is pressed', async () => {
+test('should set text length to count', async () => {
   const user = userEvent.setup();
   renderWithStoreProvider(<App />);
-  expect(screen.getByTestId('count')).toHaveTextContent('0');
+
+  // Increment count
   await user.click(screen.getByRole('button', { name: 'Increment' }));
   expect(screen.getByTestId('count')).toHaveTextContent('1');
-});
 
-test('should update the text when the input is changed', async () => {
-  const user = userEvent.setup();
-  renderWithStoreProvider(<App />);
-  expect(screen.getByRole('textbox')).toHaveValue('Hello');
+  // Change text
   await user.type(screen.getByRole('textbox'), ' World');
   expect(screen.getByRole('textbox')).toHaveValue('Hello World');
-});
 
-test('should reset the state when the reset button is pressed', async () => {
-  const user = userEvent.setup();
-  renderWithStoreProvider(<App />);
-  expect(screen.getByTestId('count')).toHaveTextContent('0');
-  await user.click(screen.getByRole('button', { name: 'Increment' }));
-  expect(screen.getByTestId('count')).toHaveTextContent('1');
-  await user.type(screen.getByRole('textbox'), ' World');
-  expect(screen.getByRole('textbox')).toHaveValue('Hello World');
-  await user.click(screen.getByRole('button', { name: 'Reset' }));
-  // both slices reset because the action name is the same
-  expect(screen.getByTestId('count')).toHaveTextContent('0');
-  expect(screen.getByRole('textbox')).toHaveValue('Hello');
+  // Set text length to count
+  await user.click(
+    screen.getByRole('button', { name: 'Set Text Length to Count' }),
+  );
+  expect(screen.getByTestId('count')).toHaveTextContent('11');
 });
