@@ -1,46 +1,10 @@
 import { afterEach, expect, test } from 'vitest';
-import { createContext, useContext, useRef } from 'react';
 import type { ReactNode } from 'react';
-import { create, useStore } from 'zustand';
-import type { StoreApi } from 'zustand';
+import { create } from 'zustand';
 import { cleanup, render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { createSlice, withSlices } from 'zustand-slices';
-
-type ExtractState<S> = S extends {
-  getState: () => infer State;
-}
-  ? State
-  : never;
-
-function createZustandContext<Store extends StoreApi<unknown>>(
-  initializeStore: () => Store,
-) {
-  const Context = createContext<Store | undefined>(undefined);
-  const StoreProvider = ({ children }: { children: ReactNode }) => {
-    const storeRef = useRef<Store>();
-    if (!storeRef.current) {
-      storeRef.current = initializeStore();
-    }
-    return (
-      <Context.Provider value={storeRef.current}>{children}</Context.Provider>
-    );
-  };
-  function useStoreApi() {
-    const store = useContext(Context);
-    if (!store) {
-      throw new Error('useStoreApi must be used within a StoreProvider');
-    }
-    return store;
-  }
-  function useSelector<Selected>(
-    selector: (state: ExtractState<Store>) => Selected,
-  ) {
-    const store = useStoreApi();
-    return useStore(store, selector);
-  }
-  return { StoreProvider, useStoreApi, useSelector };
-}
+import createZustandContext from './utils/createZustandContext.js';
 
 const countSlice = createSlice({
   name: 'count',
