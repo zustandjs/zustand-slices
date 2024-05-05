@@ -77,7 +77,8 @@ and open <http://localhost:8080> in your web browser.
 
 You can also try them in codesandbox.io:
 [01](https://codesandbox.io/s/github/zustandjs/zustand-slices/tree/main/examples/01_counter)
-[02](https://codesandbox.io/s/github/zustandjs/zustand-slices/tree/main/examples/02_async)
+<!--[02](https://codesandbox.io/s/github/zustandjs/zustand-slices/tree/main/examples/02_async)-->
+[02](https://stackblitz.com/edit/vitejs-vite-kxigsw)
 [03](https://codesandbox.io/s/github/zustandjs/zustand-slices/tree/main/examples/03_actions)
 
 ## Tweets
