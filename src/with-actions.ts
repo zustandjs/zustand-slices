@@ -19,15 +19,15 @@ export function withActions<
 >(
   config: (set: (fn: (prevState: State) => Partial<State>) => void) => State,
   actions: Actions,
-): (
-  set: (
-    fn: (
-      prevState: State & InferStateActions<Actions>,
-    ) => Partial<State & InferStateActions<Actions>>,
-  ) => void,
-  get: () => State & InferStateActions<Actions>,
-) => IsValidActions<State, Actions> extends true
-  ? State & InferStateActions<Actions>
+): IsValidActions<State, Actions> extends true
+  ? (
+      set: (
+        fn: (
+          prevState: State & InferStateActions<Actions>,
+        ) => Partial<State & InferStateActions<Actions>>,
+      ) => void,
+      get: () => State & InferStateActions<Actions>,
+    ) => State & InferStateActions<Actions>
   : never {
   return ((
     set: (
