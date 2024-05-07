@@ -8,8 +8,8 @@ type InferStateActions<Actions> = Actions extends {
     }
   : unknown;
 
-// FIXME we should check name collisions between state and actions (help wanted)
-type IsValidActions<_State, _Actions> = true;
+type IsValidActions<State, Actions> =
+  Extract<keyof State, keyof Actions> extends never ? true : false;
 
 export function withActions<
   State,
