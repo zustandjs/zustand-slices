@@ -20,9 +20,9 @@ npm install zustand zustand-slices
 
 The following concepts consist the core functionality of zustand-slices:
 
-- [createSlice](../guides/create-slice.md): Create slices to organize your state
-- [withSlices](../guides/combine-slices-into-single-store.md): Combine slices into a unified store
-- [withActions](../guides/attaching-store-level-actions.md): Attach store-level actions, in addition to slice-level actions
+- [createSlice](../guides/01_create-slice.md): Create slices to organize your state
+- [withSlices](../guides/02_combine-slices-into-single-store.md): Combine slices into a unified store
+- [withActions](../guides/03_attaching-store-level-actions.md): Attach store-level actions, in addition to slice-level actions
 
 ### First, create your slices
 

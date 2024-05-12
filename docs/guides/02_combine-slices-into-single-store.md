@@ -55,6 +55,6 @@ const Counter = () => {
 };
 ```
 
-Store-level actions can also be attached, in addition to slice-level actions using the `withActions` util. A detailed guide can be found [here](../guides/attaching-store-level-actions.md).
+Store-level actions can also be attached, in addition to slice-level actions using the `withActions` util. A detailed guide can be found [here](../guides/03_attaching-store-level-actions.md).
 
 You can also try this example in a codesandbox.io [demo](https://codesandbox.io/s/github/zustandjs/zustand-slices/tree/main/examples/01_counter).

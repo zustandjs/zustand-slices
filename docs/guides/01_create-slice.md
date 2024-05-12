@@ -21,4 +21,4 @@ const countSlice = createSlice({
 });
 ```
 
-After creating your slices, you can utilize `withSlices` along with `create` from Zustand to combine them into a single store. A detailed guide can be found [here](../guides/combine-slices-into-single-store.md).
+After creating your slices, you can utilize `withSlices` along with `create` from Zustand to combine them into a single store. A detailed guide can be found [here](../guides/02_combine-slices-into-single-store.md).
