@@ -40,24 +40,22 @@ type HasDuplicatedArgs<Configs, State> = Configs extends [
     : true
   : false;
 
-type IsValidConfigs<Configs> =
+type ValidConfigs<Configs> =
   HasDuplicatedNames<Configs> extends true
-    ? false
+    ? never
     : HasDuplicatedArgs<Configs, InferState<Configs>> extends true
-      ? false
-      : true;
+      ? never
+      : Configs;
 
 export function withSlices<
   Configs extends SliceConfig<string, unknown, NonNullable<unknown>>[],
 >(
-  ...configs: Configs
-): IsValidConfigs<Configs> extends true
-  ? (
-      set: (
-        fn: (prevState: InferState<Configs>) => Partial<InferState<Configs>>,
-      ) => void,
-    ) => InferState<Configs>
-  : never {
+  ...configs: ValidConfigs<Configs>
+): (
+  set: (
+    fn: (prevState: InferState<Configs>) => Partial<InferState<Configs>>,
+  ) => void,
+) => InferState<Configs> {
   return ((
     set: (
       fn: (prevState: InferState<Configs>) => Partial<InferState<Configs>>,

@@ -3,6 +3,7 @@ import { expectType } from 'ts-expect';
 import type { TypeEqual } from 'ts-expect';
 
 import { createSlice, withSlices, withActions } from 'zustand-slices';
+import { create } from 'zustand';
 
 describe('createSlice', () => {
   test('slice type: single slice', () => {
@@ -84,7 +85,8 @@ describe('withSlices', () => {
         inc: () => (prev) => prev + 1,
       },
     });
-    expectType<never>(withSlices(countSlice, anotherCountSlice));
+    // @ts-expect-error invalid configs
+    withSlices(countSlice, anotherCountSlice);
   });
 
   test('name collisions: slice name and action name', () => {
@@ -102,7 +104,8 @@ describe('withSlices', () => {
         count: () => (prev) => prev + 1,
       },
     });
-    expectType<never>(withSlices(countSlice, anotherCountSlice));
+    // @ts-expect-error invalid configs
+    withSlices(countSlice, anotherCountSlice);
   });
 
   test('name collisions: slice name and action name (overlapping case)', () => {
@@ -121,7 +124,8 @@ describe('withSlices', () => {
         dec: () => (prev) => prev - 1,
       },
     });
-    expectType<never>(withSlices(countSlice, anotherCountSlice));
+    // @ts-expect-error invalid configs
+    withSlices(countSlice, anotherCountSlice);
   });
 
   test('args collisions: different args', () => {
@@ -139,8 +143,10 @@ describe('withSlices', () => {
         inc: (n: number) => (prev) => prev + n,
       },
     });
-    expectType<never>(withSlices(countSlice, anotherCountSlice));
-    expectType<never>(withSlices(anotherCountSlice, countSlice));
+    // @ts-expect-error invalid configs
+    withSlices(countSlice, anotherCountSlice);
+    // @ts-expect-error invalid configs
+    withSlices(anotherCountSlice, countSlice);
   });
 
   test('args collisions: same args', () => {
@@ -181,8 +187,10 @@ describe('withSlices', () => {
         inc: (n: number) => (prev) => prev + n,
       },
     });
-    expectType<never>(withSlices(countSlice, anotherCountSlice));
-    expectType<never>(withSlices(anotherCountSlice, countSlice));
+    // @ts-expect-error invalid configs
+    withSlices(countSlice, anotherCountSlice);
+    // @ts-expect-error invalid configs
+    withSlices(anotherCountSlice, countSlice);
   });
 });
 
@@ -340,5 +348,22 @@ describe('withActions', () => {
         },
       }),
     );
+  });
+});
+
+describe('create', () => {
+  test('name collisions', () => {
+    const countSlice = createSlice({
+      name: 'count',
+      value: 0,
+      actions: {},
+    });
+    const anotherCountSlice = createSlice({
+      name: 'count',
+      value: 0,
+      actions: {},
+    });
+    // @ts-expect-error invalid configs
+    create(withSlices(countSlice, anotherCountSlice));
   });
 });
