@@ -9,7 +9,7 @@ type InferStateActions<Actions> = Actions extends {
   : unknown;
 
 type IsValidActions<State, Actions> =
-  Extract<keyof State, keyof Actions> extends never ? true : false;
+  Extract<keyof Actions, keyof State> extends never ? Actions : never;
 
 export function withActions<
   State,
@@ -18,17 +18,15 @@ export function withActions<
   },
 >(
   config: (set: (fn: (prevState: State) => Partial<State>) => void) => State,
-  actions: Actions,
-): IsValidActions<State, Actions> extends true
-  ? (
-      set: (
-        fn: (
-          prevState: State & InferStateActions<Actions>,
-        ) => Partial<State & InferStateActions<Actions>>,
-      ) => void,
-      get: () => State & InferStateActions<Actions>,
-    ) => State & InferStateActions<Actions>
-  : never {
+  actions: IsValidActions<State, Actions>,
+): (
+  set: (
+    fn: (
+      prevState: State & InferStateActions<Actions>,
+    ) => Partial<State & InferStateActions<Actions>>,
+  ) => void,
+  get: () => State & InferStateActions<Actions>,
+) => State & InferStateActions<Actions> {
   return ((
     set: (
       fn: (
