@@ -256,24 +256,22 @@ describe('withActions', () => {
       },
     });
 
-    expectType<never>(
-      withActions(withSlices(countSlice, textSlice), {
-        count: () => (state) => {
-          state.set(state.text.length);
-        },
-      }),
-    );
+    // @ts-expect-error invalid actions
+    withActions(withSlices(countSlice, textSlice), {
+      count: () => (state) => {
+        state.set(state.text.length);
+      },
+    });
 
-    expectType<never>(
-      withActions(withSlices(countSlice, textSlice), {
-        count: () => (state) => {
-          state.set(state.text.length);
-        },
-        text: () => (state) => {
-          state.updateText('Hello world');
-        },
-      }),
-    );
+    // @ts-expect-error invalid actions
+    withActions(withSlices(countSlice, textSlice), {
+      count: () => (state) => {
+        state.set(state.text.length);
+      },
+      text: () => (state) => {
+        state.updateText('Hello world');
+      },
+    });
   });
 
   test('name collisions: action names', () => {
@@ -294,24 +292,22 @@ describe('withActions', () => {
       },
     });
 
-    expectType<never>(
-      withActions(withSlices(countSlice, textSlice), {
-        inc: () => (state) => {
-          state.set(state.count + 1);
-        },
-      }),
-    );
+    // @ts-expect-error invalid actions
+    withActions(withSlices(countSlice, textSlice), {
+      inc: () => (state) => {
+        state.set(state.count + 1);
+      },
+    });
 
-    expectType<never>(
-      withActions(withSlices(countSlice, textSlice), {
-        inc: () => (state) => {
-          state.set(state.count + 1);
-        },
-        updateText: () => (state) => {
-          state.updateText('Hello World');
-        },
-      }),
-    );
+    // @ts-expect-error invalid actions
+    withActions(withSlices(countSlice, textSlice), {
+      inc: () => (state) => {
+        state.set(state.count + 1);
+      },
+      updateText: () => (state) => {
+        state.updateText('Hello World');
+      },
+    });
   });
 
   test('name collisions: action and slice names', () => {
@@ -332,22 +328,21 @@ describe('withActions', () => {
       },
     });
 
-    expectType<never>(
-      withActions(withSlices(countSlice, textSlice), {
-        inc: () => (state) => {
-          state.set(state.count + 1);
-        },
-        updateText: () => (state) => {
-          state.updateText('Hello World');
-        },
-        count: () => (state) => {
-          state.set(state.text.length);
-        },
-        text: () => (state) => {
-          state.updateText('Hello world');
-        },
-      }),
-    );
+    // @ts-expect-error invalid actions
+    withActions(withSlices(countSlice, textSlice), {
+      inc: () => (state) => {
+        state.set(state.count + 1);
+      },
+      updateText: () => (state) => {
+        state.updateText('Hello World');
+      },
+      count: () => (state) => {
+        state.set(state.text.length);
+      },
+      text: () => (state) => {
+        state.updateText('Hello world');
+      },
+    });
   });
 });
 
@@ -365,5 +360,23 @@ describe('create', () => {
     });
     // @ts-expect-error invalid configs
     create(withSlices(countSlice, anotherCountSlice));
+
+    create(
+      // @ts-expect-error invalid configs
+      withActions(withSlices(countSlice, anotherCountSlice), {
+        anotherCount: () => () => {},
+      }),
+    );
+
+    create(
+      withActions(
+        // @ts-expect-error invalid configs
+        withSlices(countSlice, anotherCountSlice),
+        // @ts-expect-error invalid actions
+        {
+          count: () => (state) => state.count,
+        },
+      ),
+    );
   });
 });
