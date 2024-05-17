@@ -8,9 +8,9 @@ While zustand-slices currently doesn't throw errors for name collisions, using T
 
 ### Slice names
 
-Collisions on slice names occur if they are shared within multiple slices. This includes avoiding conflicts with other slice and action names. As presented in the example below, `countSlice` and `anotherCountSlice` share the same name `count`, which causes the `combinedConfig` to be typed as `never`.
+Collisions on slice names occur if they are shared within multiple slices. This includes avoiding conflicts with other slice and action names. As presented in the example below, `countSlice` and `anotherCountSlice` share the same name `count`, which results in the parameters of `withSlices` being marked as invalid due to a type error:
 
-```js
+```ts
 const countSlice = createSlice({
   name: 'count',
   value: 0,
@@ -27,15 +27,13 @@ const anotherCountSlice = createSlice({
   },
 });
 
-const combinedConfig = withSlices(countSlice, anotherCountSlice);
-//        ^? const combinedConfig: never
-const useCountStore = create(combinedConfig);
-//        ^? const useCountStore: UseBoundStore<StoreApi<unknown>>
+//                                                ^? TypeScript error, indicating invalid parameters
+const useCountStore = create(withSlices(countSlice, anotherCountSlice));
 ```
 
 Using a slice name as an action name would result to the same outcome:
 
-```js
+```ts
 const countSlice = createSlice({
   name: 'count',
   value: 0,
@@ -52,17 +50,15 @@ const anotherCountSlice = createSlice({
   },
 });
 
-const combinedConfig = withSlices(countSlice, anotherCountSlice);
-//        ^? const combinedConfig: never
-const useCountStore = create(combinedConfig);
-//        ^? const useCountStore: UseBoundStore<StoreApi<unknown>>
+//                                                ^? TypeScript error, indicating invalid parameters
+const useCountStore = create(withSlices(countSlice, anotherCountSlice););
 ```
 
 ### Actions
 
 An action name can be shared across different slices as long as the action parameters remain consistent. However, when the same action name, like `inc` in the following example, is defined with different arguments in different slices, it leads to a collision.
 
-```js
+```ts
 const countSlice = createSlice({
   name: 'count',
   value: 0,
@@ -79,17 +75,15 @@ const anotherCountSlice = createSlice({
   },
 });
 
-const combinedConfig = withSlices(countSlice, anotherCountSlice);
-//        ^? const combinedConfig: never
-const useCountStore = create(combinedConfig);
-//        ^? const useCountStore: UseBoundStore<StoreApi<unknown>>
+//                                                ^? TypeScript error, indicating invalid parameters
+const useCountStore = create(withSlices(countSlice, anotherCountSlice));
 ```
 
 ## withActions
 
 When using `withActions`, the provided action names are checked compared to store names to prevent conflicts. This means that the additional store-level action names must be unique – they can't be the same as existing store-level slice or action names.
 
-```js
+```ts
 const countSlice = createSlice({
   name: 'count',
   value: 0,
@@ -107,16 +101,18 @@ const textSlice = createSlice({
   },
 });
 
-//        ^? const combinedConfig: never
-const combinedConfig = withActions(withSlices(countSlice, textSlice), {
-  inc: () => (state) => {
-    state.set(state.count + 1);
-  },
-  count: () => (state) => {
-    state.set(state.text.length);
-  },
-});
-
-const useCountStore = create(combinedConfig);
-//        ^? const useCountStore: UseBoundStore<StoreApi<unknown>>
+const useCountStore = create(
+  withActions(
+    withSlices(countSlice, textSlice),
+    // ^? TypeScript error, indicating invalid object
+    {
+      inc: () => (state) => {
+        state.set(state.count + 1);
+      },
+      count: () => (state) => {
+        state.set(state.text.length);
+      },
+    },
+  ),
+);
 ```
