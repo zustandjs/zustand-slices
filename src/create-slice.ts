@@ -1,5 +1,5 @@
 type SliceActions<Value> = {
-  [actionName: string]: (...args: never[]) => (prev: Value) => Value;
+  [actionName: string]: (...args: never[]) => (prev: Value) => Value | void;
 };
 
 export type SliceConfig<
