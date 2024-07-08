@@ -28,11 +28,17 @@ test('createSliceWithImmer', () => {
       count: 0
     },
     actions: {
-      increment: () => (prev) => prev.count += 1,
+      increment: () => (prev) => {
+        prev.count += 1
+      },
     },
   });
-  // returns the input
-  expect(createSlice(immerSlice)).toBe(immerSlice);
+  const result = createSliceWithImmer(immerSlice);
+
+  expect(result.name).toEqual(immerSlice.name);
+  expect(result.value).toEqual(immerSlice.value);
+
+  expect(typeof result.actions.increment).toBe('function');
 });
 
 test('withSlices', () => {
