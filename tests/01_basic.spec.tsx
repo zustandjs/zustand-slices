@@ -35,6 +35,9 @@ test('createSliceWithImmer', () => {
   });
   const result = createSliceWithImmer(immerSlice);
 
+  // should not be equal as createSliceWithImmer should wrap actions in `produce`
+  expect(result.actions.increment).not.toBe(immerSlice.actions.increment);
+
   expect(result.name).toEqual(immerSlice.name);
   expect(result.value).toEqual(immerSlice.value);
 
