@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
 import { create } from 'zustand';
 import { createSlice, withSlices } from 'zustand-slices';
-import { createSliceWithImmer } from 'zustand-slices/immer'; 
+import { createSliceWithImmer } from 'zustand-slices/immer';
 
 test('should export functions', () => {
   expect(createSlice).toBeDefined();
@@ -25,11 +25,11 @@ test('createSliceWithImmer', () => {
   const immerSlice = createSliceWithImmer({
     name: 'counter',
     value: {
-      count: 0
+      count: 0,
     },
     actions: {
       increment: () => (prev) => {
-        prev.count += 1
+        prev.count += 1;
       },
     },
   });

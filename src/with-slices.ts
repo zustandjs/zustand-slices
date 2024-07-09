@@ -1,16 +1,4 @@
-type SliceActions<Value> = {
-  [actionName: string]: (...args: never[]) => (prev: Value) => Value | void;
-};
-
-type SliceConfig<
-  Name extends string,
-  Value,
-  Actions extends SliceActions<Value>,
-> = {
-  name: Name;
-  value: Value;
-  actions: Actions;
-};
+import type { SliceConfig } from './create-slice.js';
 
 type ParametersIf<T> = T extends (...args: infer Args) => unknown
   ? Args
