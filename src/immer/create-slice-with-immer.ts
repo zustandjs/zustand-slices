@@ -2,7 +2,7 @@ import { produce } from 'immer';
 import type { Draft } from 'immer';
 
 // Utility type to infer the argument types of the actions
-type InferArgs<T> = T extends (...args: infer A) => void ? A : never;
+type InferArgs<T> = T extends (...args: infer A) => unknown ? A : never;
 
 type SliceActions<Value> = {
   [actionName: string]: (
