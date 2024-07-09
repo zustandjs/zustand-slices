@@ -1,10 +1,13 @@
 import { produce } from 'immer';
+import type { Draft } from 'immer';
 
 // Utility type to infer the argument types of the actions
 type InferArgs<T> = T extends (...args: infer A) => void ? A : never;
 
-export type SliceActions<Value> = {
-  [actionName: string]: (...args: never[]) => (prev: Value) => Value | void;
+type SliceActions<Value> = {
+  [actionName: string]: (
+    ...args: never[]
+  ) => (draft: Draft<Value>) => Draft<Value> | void;
 };
 
 export type SliceConfig<
@@ -28,25 +31,14 @@ export function createSliceWithImmer<
   Value,
   Actions extends SliceActions<Value>,
 >(config: SliceConfig<Name, Value, Actions>) {
-  const immerActions = Object.keys(config.actions).reduce(
-    (acc, actionKey) => {
-      const action = config.actions[actionKey as keyof Actions];
-
-      if (action) {
-        acc[actionKey as keyof Actions] = ((
-            ...args: InferArgs<typeof action>
-          ) =>
-          (prev: Value) =>
-            produce(prev, (draft: Value) =>
-              action(...args)(draft),
-            )) as ImmerActions<Value, Actions>[typeof actionKey];
-      }
-
-      return acc;
-    },
-    {} as ImmerActions<Value, Actions>,
-  );
-
+  const immerActions = Object.fromEntries(
+    Object.entries(config.actions).map(([actionKey, action]) => [
+      actionKey,
+      (...args: InferArgs<typeof action>) =>
+        (prev: Value) =>
+          produce(prev, (draft) => action(...args)(draft)),
+    ]),
+  ) as unknown as ImmerActions<Value, Actions>;
   return {
     ...config,
     actions: immerActions,
