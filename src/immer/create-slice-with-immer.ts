@@ -4,7 +4,7 @@ import { produce } from 'immer';
 type InferArgs<T> = T extends (...args: infer A) => void ? A : never;
 
 export type SliceActions<Value> = {
-  [actionName: string]: (...args: never[]) => (prev: Value) => void;
+  [actionName: string]: (...args: never[]) => (prev: Value) => Value | void;
 };
 
 export type SliceConfig<
@@ -18,7 +18,7 @@ export type SliceConfig<
 };
 
 type ImmerActions<Value, Actions extends SliceActions<Value>> = {
-  [K in keyof Actions]: (...args: InferArgs<Actions[K]>) => (prev: Value) => void;
+  [K in keyof Actions]: (...args: InferArgs<Actions[K]>) => (prev: Value) => Value | void;
 };
 
 export function createSliceWithImmer<
@@ -30,10 +30,15 @@ export function createSliceWithImmer<
     const action = config.actions[actionKey as keyof Actions];
 
     if (action) {
-      acc[actionKey as keyof Actions] = ((...args: InferArgs<typeof action>) => (prev: Value) =>
-        produce(prev, (draft: Value) => {
-          (action as (...args: InferArgs<typeof action>) => (draft: Value) => void)(...args)(draft);
-        })) as ImmerActions<Value, Actions>[typeof actionKey];
+      acc[actionKey as keyof Actions] = ((...args: InferArgs<typeof action>) => (prev: Value) => {
+        // Use produce to handle draft modification or return new state
+        return produce(prev, (draft: Value) => {
+          const result = (action as (...args: InferArgs<typeof action>) => (draft: Value) => Value | void)(...args)(draft);
+          if (result !== undefined) {
+            return result;
+          }
+        });
+      }) as ImmerActions<Value, Actions>[typeof actionKey];
     }
 
     return acc;
