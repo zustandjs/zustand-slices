@@ -7,7 +7,8 @@
     "react": "latest",
     "react-dom": "latest",
     "zustand": "latest",
-    "zustand-slices": "latest"
+    "zustand-slices": "latest",
+    "immer": "latest"
   },
   "devDependencies": {
     "@types/react": "latest",
