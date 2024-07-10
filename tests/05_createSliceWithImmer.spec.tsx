@@ -38,7 +38,9 @@ test('createSliceWithImmer', () => {
   expect(typeof result.actions.increment).toBe('function');
 
   const incrementedState = result.actions.increment()(result.value);
-  const newTextState = result.actions.setText({ newText: 'Second' })(result.value);
+  const newTextState = result.actions.setText({ newText: 'Second' })(
+    result.value,
+  );
   const resetState = result.actions.reset()(result.value);
 
   expect(incrementedState.count).toBe(1);
