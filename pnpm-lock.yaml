@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+dependencies:
+  immer:
+    specifier: '>=9.0.6'
+    version: 10.1.1
+
 devDependencies:
   '@testing-library/jest-dom':
     specifier: 6.4.2
@@ -76,7 +81,7 @@ devDependencies:
     version: 1.5.0(@types/node@20.12.8)(happy-dom@14.7.1)
   zustand:
     specifier: ^4.5.2
-    version: 4.5.2(@types/react@18.3.1)(react@19.0.0-beta-73bcdfbae5-20240502)
+    version: 4.5.2(@types/react@18.3.1)(immer@10.1.1)(react@19.0.0-beta-73bcdfbae5-20240502)
   zustand-slices:
     specifier: link:.
     version: 'link:'
@@ -2003,6 +2008,9 @@ packages:
     engines: {node: '>= 4'}
     dev: true
 
+  /immer@10.1.1:
+    resolution: {integrity: sha512-s2MPrmjovJcoMaHtx6K11Ra7oD05NT97w1IC5zpMkT6Atjr7H8LjaDd81iIxUYpMKSRRNMJE703M1Fhr/TctHw==}
+
   /import-fresh@3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
     engines: {node: '>=6'}
@@ -3369,7 +3377,7 @@ packages:
     engines: {node: '>=12.20'}
     dev: true
 
-  /zustand@4.5.2(@types/react@18.3.1)(react@19.0.0-beta-73bcdfbae5-20240502):
+  /zustand@4.5.2(@types/react@18.3.1)(immer@10.1.1)(react@19.0.0-beta-73bcdfbae5-20240502):
     resolution: {integrity: sha512-2cN1tPkDVkwCy5ickKrI7vijSjPksFRfqS6237NzT0vqSsztTNnQdHw9mmN7uBdk3gceVXU0a+21jFzFzAc9+g==}
     engines: {node: '>=12.7.0'}
     peerDependencies:
@@ -3385,6 +3393,7 @@ packages:
         optional: true
     dependencies:
       '@types/react': 18.3.1
+      immer: 10.1.1
       react: 19.0.0-beta-73bcdfbae5-20240502
       use-sync-external-store: 1.2.0(react@19.0.0-beta-73bcdfbae5-20240502)
     dev: true

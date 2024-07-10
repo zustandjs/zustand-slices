@@ -22,6 +22,16 @@
         "types": "./dist/index.d.ts",
         "default": "./dist/index.js"
       }
+    },
+    "./immer": {
+      "require": {
+        "types": "./dist/cjs/immer/index.d.ts",
+        "default": "./dist/cjs/immer/index.js"
+      },
+      "default": {
+        "types": "./dist/immer/index.d.ts",
+        "default": "./dist/immer/index.js"
+      }
     }
   },
   "sideEffects": false,
@@ -81,7 +91,13 @@
     "zustand-slices": "link:."
   },
   "peerDependencies": {
+    "immer": ">=9.0.6",
     "react": ">=18.0.0",
     "zustand": ">=4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "immer": {
+      "optional": true
+    }
   }
 }

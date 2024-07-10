@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- feat: create slice with immer #24
+
 ## [0.2.0] - 2024-05-04
 
 ### Added
