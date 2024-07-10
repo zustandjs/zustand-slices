@@ -10,10 +10,20 @@ test('createSliceWithImmer', () => {
     name: 'counter',
     value: {
       count: 0,
+      text: 'First',
     },
     actions: {
       increment: () => (prev) => {
         prev.count += 1;
+      },
+      setText: (payload: { newText: string }) => (prev) => {
+        prev.text = payload.newText;
+      },
+      reset: () => () => {
+        return {
+          count: 0,
+          text: 'First',
+        };
       },
     },
   });
@@ -26,4 +36,12 @@ test('createSliceWithImmer', () => {
   expect(result.value).toEqual(immerSlice.value);
 
   expect(typeof result.actions.increment).toBe('function');
+
+  const incrementedState = result.actions.increment()(result.value);
+  const newTextState = result.actions.setText({ newText: 'Second' })(result.value);
+  const resetState = result.actions.reset()(result.value);
+
+  expect(incrementedState.count).toBe(1);
+  expect(newTextState.text).toBe('Second');
+  expect(resetState).toEqual({ count: 0, text: 'First' });
 });
