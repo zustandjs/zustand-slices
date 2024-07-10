@@ -5,14 +5,14 @@ import { createSliceWithImmer } from 'zustand-slices/immer';
 const countSlice = createSliceWithImmer({
   name: 'count',
   value: {
-    count: 0
+    count: 0,
   },
   actions: {
     inc: () => (state) => {
       state.count += 1;
     },
     reset: () => () => ({ count: 0 }),
-    },
+  },
 });
 
 const textSlice = createSliceWithImmer({
