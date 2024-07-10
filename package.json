@@ -52,7 +52,8 @@
     "test:spec": "vitest run",
     "examples:01_counter": "DIR=01_counter vite",
     "examples:02_async": "DIR=02_async vite",
-    "examples:03_actions": "DIR=03_actions vite"
+    "examples:03_actions": "DIR=03_actions vite",
+    "examples:04_immer": "DIR=04_immer vite"
   },
   "keywords": [
     "react",
