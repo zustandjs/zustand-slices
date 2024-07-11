@@ -4,11 +4,11 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "immer": "latest",
     "react": "latest",
     "react-dom": "latest",
     "zustand": "latest",
-    "zustand-slices": "latest",
-    "immer": "latest"
+    "zustand-slices": "latest"
   },
   "devDependencies": {
     "@types/react": "latest",
