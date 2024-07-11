@@ -7,6 +7,17 @@
 
 A slice utility for Zustand
 
+## Motivation
+
+Zustand is a very minimal global state library.
+It's not designed with slice patterns.
+But as it's flexible and unopinionated, users invented some slice patterns.
+One of which is described in the official Zustand documentation.
+However, it's very tricky if you were to use it with TypeScript.
+
+This library provides an opinionated way for a slice pattern.
+It's designed to be TypeScript friendly.
+
 ## Install
 
 ```bash
@@ -81,7 +92,7 @@ You can also try them directly:
 [03](https://stackblitz.com/github/zustandjs/zustand-slices/tree/main/examples/03_actions)
 [04](https://stackblitz.com/github/zustandjs/zustand-slices/tree/main/examples/04_immer)
 
-<!--
+<!-- This requires React 19 to be released.
 [02](https://stackblitz.com/github/zustandjs/zustand-slices/tree/main/examples/02_async)
 -->
 
