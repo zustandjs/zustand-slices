@@ -79,6 +79,7 @@ You can also try them directly:
 [01](https://stackblitz.com/github/zustandjs/zustand-slices/tree/main/examples/01_counter)
 [02](https://stackblitz.com/edit/vitejs-vite-kxigsw)
 [03](https://stackblitz.com/github/zustandjs/zustand-slices/tree/main/examples/03_actions)
+[04](https://stackblitz.com/github/zustandjs/zustand-slices/tree/main/examples/04_immer)
 
 <!--
 [02](https://stackblitz.com/github/zustandjs/zustand-slices/tree/main/examples/02_async)
@@ -92,3 +93,4 @@ You can also try them directly:
 - https://twitter.com/dai_shi/status/1781106942724993372
 - https://twitter.com/dai_shi/status/1785504766254297436
 - https://twitter.com/dai_shi/status/1786568001044750693
+- https://x.com/dai_shi/status/1811204918512067047
