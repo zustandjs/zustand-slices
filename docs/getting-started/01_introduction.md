@@ -37,7 +37,7 @@ const countSlice = createSlice({
   value: 0,
   actions: {
     inc: () => (prev) => prev + 1,
-    reset: () => () => 0,
+    resetCount: () => () => 0,
   },
 });
 
@@ -46,7 +46,7 @@ const textSlice = createSlice({
   value: 'Hello',
   actions: {
     updateText: (newText: string) => () => newText,
-    reset: () => () => 'Hello',
+    resetText: () => () => 'Hello',
   },
 });
 ```
