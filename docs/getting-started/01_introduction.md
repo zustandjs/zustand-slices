@@ -59,6 +59,8 @@ By utilizing `create` from Zustand, you can combine these slices into a single s
 const useCountStore = create(withSlices(countSlice, textSlice));
 ```
 
+> 💡 **Note:** Actions with the same name across slices are merged into a single action in the combined store. Calling such an action executes the corresponding actions from each slice. For example, since both slices have a `reset` action, calling `reset` will reset both `count` and `text` to their initial values.
+
 ### Easily utilize it in your components
 
 Finally, you can seamlessly integrate and access your store directly into your component logic utilizing the `useCountStore` hook.
