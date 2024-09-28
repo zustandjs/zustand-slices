@@ -24,8 +24,8 @@ test('withSlices', () => {
     name: 'count',
     value: 0,
     actions: {
-      inc: () => (prev) => prev + 1,
-      reset: () => () => 0,
+      incCount: () => (prev) => prev + 1,
+      resetCount: () => () => 0,
     },
   });
   const textSlice = createSlice({
@@ -33,7 +33,7 @@ test('withSlices', () => {
     value: 'Hello',
     actions: {
       updateText: (newText: string) => () => newText,
-      reset: () => () => 'Hello',
+      resetText: () => () => 'Hello',
     },
   });
   const combinedConfig = withSlices(countSlice, textSlice);
@@ -42,7 +42,8 @@ test('withSlices', () => {
   const state = store.getState();
   expect(state.count).toBe(countSlice.value);
   expect(state.text).toBe(textSlice.value);
-  expect(state.inc).toBeInstanceOf(Function);
-  expect(state.reset).toBeInstanceOf(Function);
+  expect(state.incCount).toBeInstanceOf(Function);
+  expect(state.resetCount).toBeInstanceOf(Function);
   expect(state.updateText).toBeInstanceOf(Function);
+  expect(state.resetText).toBeInstanceOf(Function);
 });

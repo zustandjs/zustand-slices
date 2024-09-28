@@ -8,8 +8,8 @@ const countSlice = createSlice({
   name: 'count',
   value: Promise.resolve(0),
   actions: {
-    inc: () => async (prev) => (await prev) + 1,
-    reset: () => async () => 0,
+    incCount: () => async (prev) => (await prev) + 1,
+    resetCount: () => async () => 0,
   },
 });
 
@@ -18,7 +18,7 @@ const textSlice = createSlice({
   value: 'Hello',
   actions: {
     updateText: (newText: string) => () => newText,
-    reset: () => () => 'Hello',
+    resetText: () => () => 'Hello',
   },
 });
 
@@ -27,12 +27,17 @@ const useCountStore = create(withSlices(countSlice, textSlice));
 const Counter = () => {
   const count = use(useCountStore((state) => state.count));
   const text = useCountStore((state) => state.text);
-  const { inc, updateText, reset } = useCountStore.getState();
+  const { incCount, resetCount, updateText, resetText } =
+    useCountStore.getState();
+  const reset = () => {
+    resetCount();
+    resetText();
+  };
   return (
     <>
       <p>
         Count: {count}
-        <button type="button" onClick={inc}>
+        <button type="button" onClick={incCount}>
           +1
         </button>
       </p>
