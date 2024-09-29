@@ -4,7 +4,7 @@
 
 ### Added
 
-- feat: avoid action merging #32
+- breaking: avoid action merging #32
 
 ## [0.3.0] - 2024-07-11
 
