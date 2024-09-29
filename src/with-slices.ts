@@ -45,9 +45,14 @@ export function withSlices<
         config.actions,
       )) {
         state[actionName] = (...args: unknown[]) => {
-          set(((prevState: Record<string, unknown>) => ({
-            [config.name]: actionFn(...args)(prevState[config.name]),
-          })) as never);
+          set(((prevState: Record<string, unknown>) => {
+            const prevSlice = prevState[config.name];
+            const nextSlice = actionFn(...args)(prevSlice);
+            if (Object.is(prevSlice, nextSlice)) {
+              return prevState;
+            }
+            return { [config.name]: nextSlice };
+          }) as never);
         };
       }
     }
