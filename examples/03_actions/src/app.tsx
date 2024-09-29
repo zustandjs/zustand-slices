@@ -5,9 +5,9 @@ const countSlice = createSlice({
   name: 'count',
   value: 0,
   actions: {
-    'count/inc': () => (prev) => prev + 1,
-    'count/set': (newCount: number) => () => newCount,
-    reset: () => () => 0,
+    incCount: () => (prev) => prev + 1,
+    setCount: (newCount: number) => () => newCount,
+    resetCount: () => () => 0,
   },
 });
 
@@ -15,15 +15,19 @@ const textSlice = createSlice({
   name: 'text',
   value: 'Hello',
   actions: {
-    'text/set': (newText: string) => () => newText,
-    reset: () => () => 'Hello',
+    updateText: (newText: string) => () => newText,
+    resetText: () => () => 'Hello',
   },
 });
 
 const useCountStore = create(
   withActions(withSlices(countSlice, textSlice), {
+    reset: () => (state) => {
+      state.resetCount();
+      state.resetText();
+    },
     setCountWithTextLength: () => (state) => {
-      state['count/set'](state.text.length);
+      state.setCount(state.text.length);
     },
   }),
 );
@@ -31,17 +35,13 @@ const useCountStore = create(
 const Counter = () => {
   const count = useCountStore((state) => state.count);
   const text = useCountStore((state) => state.text);
-  const {
-    'count/inc': inc,
-    'text/set': updateText,
-    reset,
-    setCountWithTextLength,
-  } = useCountStore.getState();
+  const { incCount, updateText, reset, setCountWithTextLength } =
+    useCountStore.getState();
   return (
     <>
       <p>
         Count: {count}
-        <button type="button" onClick={inc}>
+        <button type="button" onClick={incCount}>
           +1
         </button>
       </p>

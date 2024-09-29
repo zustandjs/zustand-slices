@@ -10,8 +10,8 @@ const countSlice = createSlice({
   name: 'count',
   value: 0,
   actions: {
-    inc: () => (state) => state + 1,
-    set: (newCount: number) => () => newCount,
+    incCount: () => (state) => state + 1,
+    setCount: (newCount: number) => () => newCount,
   },
 });
 
@@ -27,7 +27,7 @@ const { StoreProvider, useStoreApi, useSelector } = createZustandContext(() =>
   create(
     withActions(withSlices(countSlice, textSlice), {
       setCountWithTextLength: () => (state) => {
-        state.set(state.text.length);
+        state.setCount(state.text.length);
       },
     }),
   ),
@@ -38,11 +38,11 @@ const renderWithStoreProvider = (app: ReactNode) =>
 
 const Counter = () => {
   const count = useSelector((state) => state.count);
-  const { inc } = useStoreApi().getState();
+  const { incCount } = useStoreApi().getState();
   return (
     <div>
       <p data-testid="count">{count}</p>
-      <button type="button" onClick={inc}>
+      <button type="button" onClick={incCount}>
         Increment
       </button>
     </div>

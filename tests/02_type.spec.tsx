@@ -35,8 +35,8 @@ describe('withSlices', () => {
       name: 'count',
       value: 0,
       actions: {
-        inc: () => (prev) => prev + 1,
-        reset: () => () => 0,
+        incCount: () => (prev) => prev + 1,
+        resetCount: () => () => 0,
       },
     });
 
@@ -45,16 +45,17 @@ describe('withSlices', () => {
       value: 'Hello',
       actions: {
         updateText: (newText: string) => () => newText,
-        reset: () => () => 'Hello',
+        resetText: () => () => 'Hello',
       },
     });
 
     type CountTextState = {
       count: number;
-      inc: () => void;
+      incCount: () => void;
+      resetCount: () => void;
       text: string;
       updateText: (newText: string) => void;
-      reset: () => void;
+      resetText: () => void;
     };
 
     const slices = withSlices(countSlice, textSlice);
