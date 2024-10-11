@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- breaking: avoid action merging #32
+
 ## [0.3.0] - 2024-07-11
 
 ### Added

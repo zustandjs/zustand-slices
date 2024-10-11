@@ -8,10 +8,10 @@ const countSlice = createSliceWithImmer({
     count: 0,
   },
   actions: {
-    inc: () => (state) => {
+    incCount: () => (state) => {
       state.count += 1;
     },
-    reset: () => () => ({ count: 0 }),
+    resetCount: () => () => ({ count: 0 }),
   },
 });
 
@@ -20,7 +20,7 @@ const textSlice = createSliceWithImmer({
   value: 'Hello',
   actions: {
     updateText: (newText: string) => () => newText,
-    reset: () => () => 'Hello',
+    resetText: () => () => 'Hello',
   },
 });
 
@@ -29,12 +29,17 @@ const useCountStore = create(withSlices(countSlice, textSlice));
 const Counter = () => {
   const { count } = useCountStore((state) => state.count);
   const text = useCountStore((state) => state.text);
-  const { inc, updateText, reset } = useCountStore.getState();
+  const { incCount, resetCount, updateText, resetText } =
+    useCountStore.getState();
+  const reset = () => {
+    resetCount();
+    resetText();
+  };
   return (
     <>
       <p>
         Count: {count}
-        <button type="button" onClick={inc}>
+        <button type="button" onClick={incCount}>
           +1
         </button>
       </p>
