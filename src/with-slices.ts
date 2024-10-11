@@ -28,14 +28,10 @@ export function withSlices<
 >(
   ...configs: ValidConfigs<Configs>
 ): (
-  set: (
-    fn: (prevState: InferState<Configs>) => Partial<InferState<Configs>>,
-  ) => void,
+  set: (fn: (prevState: InferState<Configs>) => InferState<Configs>) => void,
 ) => InferState<Configs> {
   return ((
-    set: (
-      fn: (prevState: InferState<Configs>) => Partial<InferState<Configs>>,
-    ) => void,
+    set: (fn: (prevState: InferState<Configs>) => InferState<Configs>) => void,
   ) => {
     const state: Record<string, unknown> = {};
     type ActionFn = (...args: unknown[]) => (prev: unknown) => unknown;
