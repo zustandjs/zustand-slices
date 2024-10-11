@@ -1,4 +1,4 @@
-import { test, describe } from 'vitest';
+import { expect, test, describe } from 'vitest';
 import { expectType } from 'ts-expect';
 import type { TypeEqual } from 'ts-expect';
 
@@ -14,6 +14,7 @@ describe('createSlice', () => {
         inc: () => (prev) => prev + 1,
       },
     });
+    expect(countSlice).toBeDefined();
     expectType<
       TypeEqual<
         {
@@ -65,6 +66,7 @@ describe('withSlices', () => {
         set: (
           fn: (prevState: CountTextState) => Partial<CountTextState>,
         ) => void,
+        get: () => CountTextState,
       ) => CountTextState
     >(slices);
 

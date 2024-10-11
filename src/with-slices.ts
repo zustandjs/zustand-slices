@@ -23,20 +23,18 @@ type HasDuplicatedNames<Configs, Names = never> = Configs extends [
 type ValidConfigs<Configs> =
   HasDuplicatedNames<Configs> extends true ? never : Configs;
 
+type SetState<T> = (fn: (state: T) => Partial<T>) => void;
+type GetState<T> = () => T;
+
 export function withSlices<
   Configs extends SliceConfig<string, unknown, NonNullable<unknown>>[],
 >(
   ...configs: ValidConfigs<Configs>
 ): (
-  set: (
-    fn: (prevState: InferState<Configs>) => Partial<InferState<Configs>>,
-  ) => void,
+  set: SetState<InferState<Configs>>,
+  get: GetState<InferState<Configs>>,
 ) => InferState<Configs> {
-  return ((
-    set: (
-      fn: (prevState: InferState<Configs>) => Partial<InferState<Configs>>,
-    ) => void,
-  ) => {
+  return (set) => {
     const state: Record<string, unknown> = {};
     type ActionFn = (...args: unknown[]) => (prev: unknown) => unknown;
     for (const config of configs) {
@@ -56,6 +54,6 @@ export function withSlices<
         };
       }
     }
-    return state;
-  }) as never;
+    return state as never;
+  };
 }
