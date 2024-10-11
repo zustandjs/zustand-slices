@@ -66,6 +66,7 @@ describe('withSlices', () => {
         set: (
           fn: (prevState: CountTextState) => Partial<CountTextState>,
         ) => void,
+        get: () => CountTextState,
       ) => CountTextState
     >(slices);
 
