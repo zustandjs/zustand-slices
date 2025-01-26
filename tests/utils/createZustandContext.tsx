@@ -1,3 +1,5 @@
+/* eslint-disable react-compiler/react-compiler */
+
 import { createContext, useContext, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { useStore } from 'zustand';
@@ -14,7 +16,7 @@ function createZustandContext<Store extends StoreApi<unknown>>(
 ) {
   const Context = createContext<Store | undefined>(undefined);
   const StoreProvider = ({ children }: { children: ReactNode }) => {
-    const storeRef = useRef<Store>();
+    const storeRef = useRef<Store>(undefined);
     if (!storeRef.current) {
       storeRef.current = initializeStore();
     }

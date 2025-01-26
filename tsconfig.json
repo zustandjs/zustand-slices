@@ -12,8 +12,8 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "zustand-slices": ["./src/index.js"],
-      "zustand-slices/immer": ["./src/immer/index.js"]
+      "zustand-slices": ["./src/index.ts"],
+      "zustand-slices/immer": ["./src/immer/index.ts"]
     }
   },
   "exclude": ["dist", "examples"]
