@@ -1,5 +1,3 @@
-/* eslint-disable react-compiler/react-compiler */
-
 import { createContext, useContext, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { useStore } from 'zustand';

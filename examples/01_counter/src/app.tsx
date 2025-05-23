@@ -25,7 +25,7 @@ const Counter = () => {
   const count = useCountStore((state) => state.count);
   const text = useCountStore((state) => state.text);
   const { incCount, resetCount, updateText, resetText } =
-    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/react-compiler
     useCountStore.getState();
   const reset = () => {
     resetCount();
